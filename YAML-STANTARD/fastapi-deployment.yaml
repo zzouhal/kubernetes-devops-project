@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: fastapi
+  name: fastapi
+spec:
+  replicas: 1 #back to 3
+  selector:
+    matchLabels:
+      name: fastapi
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        name: fastapi
+    spec:
+      containers:
+        - image: zzouhal/fastapi:latest
+          name: fastapi
+          ports:
+            - containerPort: 5000
+              hostPort: 5000
+              protocol: TCP
+          resources: {}
+      restartPolicy: Always
+status: {}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: fastapi
+  name: fastapi
+spec:
+  ports:
+    - name: "5000"
+      port: 5000
+      targetPort: 5000
+  selector:
+    name: fastapi
+status:
+  loadBalancer: {}
+
+---
+
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+ name: hpa-fastapi
+spec:
+ scaleTargetRef:
+   apiVersion: apps/v1
+   kind: Deployment
+   name: fastapi
+ minReplicas: 1 #back to 3
+ maxReplicas: 6
+ targetCPUUtilizationPercentage: 70
+
