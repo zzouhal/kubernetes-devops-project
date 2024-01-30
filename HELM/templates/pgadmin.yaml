@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.pgadmin.name }}
+  labels:
+    name : {{.Values.pgadmin.name }}
+spec:
+  replicas: {{ .Values.pgadmin.replicaCount }}
+  selector:
+    matchLabels:
+      name: {{ .Values.pgadmin.name }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.pgadmin.name }}
+    spec:
+      containers:
+        - name: {{ .Values.pgadmin.name }}
+          envFrom:
+            - secretRef:
+                name: {{ .Values.pgadmin.config.secret }}
+            - configMapRef:
+                name: {{ .Values.pgadmin.config.configmap }}
+          image: {{ .Values.pgadmin.image.repository }}
+          imagePullPolicy: {{ .Values.pgadmin.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.pgadmin.service.targetport }}
+              hostPort: {{ .Values.pgadmin.service.port }}
+              protocol: TCP
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.pgadmin.name }}
+  labels:
+    name: {{ .Values.pgadmin.name }}
+spec:
+  type: {{ .Values.pgadmin.service.type }}
+  ports:
+    - port: {{ .Values.pgadmin.service.port }}
+      targetPort: {{ .Values.pgadmin.service.targetport }}
+  selector:
+    name: {{ .Values.pgadmin.name }}

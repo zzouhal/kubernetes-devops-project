@@ -1,9 +1,0 @@
-kubectl delete deployments --all -n standard
-kubectl delete services --all -n standard
-kubectl delete statefulsets --all -n standard
-kubectl delete configmaps --all -n standard
-kubectl delete secrets --all -n standard
-kubectl delete persistantvolumes --all -n standard
-kubectl delete persistantvolumeclaims --all -n standard
-kubectl delete hpa --all -n standard
-kubectl delete ingress --all -n standard

@@ -1,0 +1,14 @@
+ENV['VAGRANT_DEFAULT_PROVIDER'] = 'docker'
+
+Vagrant.configure("2") do |config|
+    config.vm.define "backupserver" do |backupserver|
+    backupserver.vm.network :private_network, ip: "192.168.10.10", netmask: 24
+    backupserver.vm.provider "docker" do |backupserver|
+    backupserver.build_dir = "."
+    backupserver.has_ssh = true
+    backupserver.privileged = true
+    backupserver.create_args = ["-v", "/sys/fs/cgroup:/sys/fs/cgroup:ro"]
+            backupserver.name = "backupserver"
+   end
+  end
+end
